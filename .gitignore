@@ -1,0 +1,6 @@
+/.mypy_cache
+/build
+/dist
+/nxml.egg-info
+/docs/_build
+/_*
