@@ -1,7 +1,7 @@
 NXML documentation
 ==================
 
-NXML is eXeriment Machine learning Library.
+NXML is an eXtension for Machine Learning.
 
 Please refer to the `Furo documentation <https://pradyunsg.me/furo/#>`_ for more information.
 

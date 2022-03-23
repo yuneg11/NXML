@@ -18,7 +18,7 @@ setup(
     version=__version__,
     author="EungGu Yun",
     author_email="yuneg11@gmail.com",
-    description="NXCL is eXtensions for Machine Learning",
+    description="NXCL is an eXtension for Machine Learning",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/yuneg11/nxml",
@@ -45,7 +45,5 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: System :: Logging",
-        "Topic :: System :: Monitoring",
     ],
 )
