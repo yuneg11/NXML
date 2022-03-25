@@ -1,14 +1,14 @@
 from typing import Any, Optional
-from functools import partial, wraps
+from functools import wraps
 
-from jax import jit
-
-from ..univ.metric import (
+from torch import Tensor
+from torch.nn.functional import (
     nll_loss as _nll_loss,
-    accuracy as _accuracy,
 )
 
-Array = Any
+from nxml.univ.nn.functional.metric import (
+    accuracy as _accuracy,
+)
 
 
 __all__ = [
@@ -17,25 +17,27 @@ __all__ = [
 ]
 
 
+# wrappers
+
 @wraps(_nll_loss)
-@partial(jit, static_argnames=("ignore_index", "reduction"))
 def nll_loss(
-    input: Array,
-    target: Array,
-    weight: Optional[Array] = None,
+    input: Tensor,
+    target: Tensor,
+    weight: Optional[Tensor] = None,
     ignore_index: int = -100,
     reduction: str = "mean",
 ):
     return _nll_loss(input, target, weight, ignore_index=ignore_index, reduction=reduction)
 
 
-# TODO: Change defaults when ignore_index implemented
 @wraps(_accuracy)
-@partial(jit, static_argnames=("ignore_index", "reduction"))
 def accuracy(
-    input: Array,
-    target: Array,
+    input: Tensor,
+    target: Tensor,
     ignore_index: int = -100,
     reduction: str = "mean",
 ):
     return _accuracy(input, target, ignore_index=ignore_index, reduction=reduction)
+
+
+# TODO: Change wraps to real "docstrings" to support IDE hints.

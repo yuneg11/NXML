@@ -1,8 +1,8 @@
+# Docstrings are copied from the original PyTorch implementation.
+# See: https://github.com/pytorch/pytorch/blob/master/torch/nn/functional.py
+
 """
 Implementation of framework-agnostic metrics.
-
-Docstrings are copied from the original PyTorch implementation.
-See: https://github.com/pytorch/pytorch/blob/master/torch/nn/functional.py
 """
 
 from typing import Optional
@@ -34,8 +34,6 @@ def _reduction(
     Returns:
         reduced_input (Tensor): _description_
     """
-    if not ep.istensor(input):
-        raise TypeError("input must be an eagerpy tensor")
 
     if reduction == "mean":
         return ep.mean(input)
@@ -74,7 +72,7 @@ def nll_loss(
             elements in the output, ``'sum'``: the output will be summed. Default: ``'mean'``
 
     Returns:
-        nll (Tensor): _description_
+        nll (Tensor)
     """
 
     input, target = ep.astensors(input, target)
@@ -116,7 +114,7 @@ def accuracy(
             elements in the output, ``'sum'``: the output will be summed. Default: ``'mean'``
 
     Returns:
-        accuracy (Tensor): _description_
+        accuracy (Tensor)
     """
 
     input, target = ep.astensors(input, target)
