@@ -3,10 +3,3 @@
 [NXML](https://github.com/yuneg11/nxml) is an eXtension for Machine Learning
 
 **This library is under construction.**
-
-## Build docs
-
-```bash
-sphinx-apidoc -f -o docs nxml --separate
-make dev
-```

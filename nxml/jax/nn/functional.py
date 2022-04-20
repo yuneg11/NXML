@@ -3,8 +3,9 @@ from functools import wraps
 
 from jax import jit
 
-from nxml.univ.nn.functional.metric import (
+from nxml.univ.nn.functional import (
     nll_loss as _nll_loss,
+    cross_entropy as _cross_entropy,
     accuracy as _accuracy,
 )
 
@@ -13,6 +14,7 @@ Array = Any
 
 __all__ = [
     "nll_loss",
+    "cross_entropy",
     "accuracy",
 ]
 
@@ -20,7 +22,9 @@ __all__ = [
 # jitted versions functions
 
 jit_nll_loss = jit(_nll_loss, static_argnames=("ignore_index", "reduction"))
-jit_accuracy = jit(_accuracy, static_argnames=("ignore_index", "reduction"))
+jit_cross_entropy = jit(_cross_entropy,
+                        static_argnames=("ignore_index", "reduction", "label_smoothing"))
+jit_accuracy = jit(_accuracy, static_argnames=("topk", "ignore_index", "reduction"))
 
 
 # wrappers for the jitted versions
@@ -36,14 +40,30 @@ def nll_loss(
     return jit_nll_loss(input, target, weight, ignore_index=ignore_index, reduction=reduction)
 
 
+@wraps(_cross_entropy)
+def cross_entropy(
+    input: Array,
+    target: Array,
+    weight: Optional[Array] = None,
+    ignore_index: int = -100,
+    reduction: str = "mean",
+    label_smoothing: float = 0.0,
+):
+    return _cross_entropy(
+        input, target, weight, ignore_index=ignore_index, reduction=reduction,
+        label_smoothing=label_smoothing,
+    )
+
+
 @wraps(_accuracy)
 def accuracy(
     input: Array,
     target: Array,
+    topk: int = 1,
     ignore_index: int = -100,
     reduction: str = "mean",
 ):
-    return jit_accuracy(input, target, ignore_index=ignore_index, reduction=reduction)
+    return jit_accuracy(input, target, topk=topk, ignore_index=ignore_index, reduction=reduction)
 
 
 # TODO: Change wraps to real "docstrings" to support IDE hints.
