@@ -7,6 +7,9 @@ from torch.nn.functional import (
     cross_entropy as _cross_entropy,
 )
 
+# FIXME: This is a temporary fix before we can implement custom functions
+from torch.nn.functional import *
+
 from nxml.univ.nn.functional import (
     accuracy as _accuracy,
 )

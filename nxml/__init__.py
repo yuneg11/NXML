@@ -13,4 +13,4 @@ else:
     univ  = LazyModule("nxml.univ")
 
 
-__version__ = "0.0.1"
+__version__ = "0.0.1.dev0"

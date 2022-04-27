@@ -2,7 +2,7 @@
 # See: https://github.com/pytorch/pytorch/blob/master/torch/nn/functional.py
 
 """
-Implementation of framework-agnostic metrics.
+Implementation of framework-agnostic functions.
 """
 
 from typing import Optional

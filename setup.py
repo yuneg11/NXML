@@ -1,4 +1,5 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
 
 with open("nxml/__init__.py") as init_file:
     __version__ = ""
@@ -18,14 +19,16 @@ setup(
     version=__version__,
     author="EungGu Yun",
     author_email="yuneg11@gmail.com",
-    description="NXCL is an eXtension for Machine Learning",
+    description="NXML is an eXtension for Machine Learning",
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/yuneg11/nxml",
     project_urls={
-        "Bug Tracker": "https://github.com/yuneg11/nxml/issues"
+        "Documentation": "https://yuneg11.github.io/NXML",
+        "Source": "https://github.com/yuneg11/nxml",
+        "Tracker": "https://github.com/yuneg11/nxml/issues"
     },
-    packages=["nxml"],
+    packages=find_packages(include=["nxml", "nxml.*"]),
     package_dir={"nxml": "nxml"},
     # package_data={'': []},
     # include_package_data=True,
