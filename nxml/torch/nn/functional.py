@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 from functools import wraps
 
 from torch import Tensor

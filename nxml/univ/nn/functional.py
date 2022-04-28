@@ -182,10 +182,10 @@ def cross_entropy(
     if weight is None:
         ce = -ep.sum(log_prob * smooth_label, axis=1)
     else:
-        raise NotImplementedError("weight is not implemented")
-        weight = weight / ep.sum(weight)
-        weight = ep.reshape(weight, class_shape)
-        ce = -ep.sum(log_prob * smooth_label * weight, axis=1)
+        raise NotImplementedError("weight is not properly implemented")
+        # weight = weight / ep.sum(weight)
+        # weight = ep.reshape(weight, class_shape)
+        # ce = -ep.sum(log_prob * smooth_label * weight, axis=1)
 
     if is_target_indices:
         mask = (target != ignore_index) if ignore_index >= 0 else None
