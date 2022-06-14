@@ -28,6 +28,7 @@ __all__ = [
     "get_rank",
     "get_local_rank",
     "is_master_process",
+    "is_distributed",
     "synchronize",
     "all_gather",
     "gather",
@@ -91,19 +92,21 @@ def is_master_process() -> bool:
     return get_rank() == 0
 
 
+def is_distributed() -> bool:
+    if not dist.is_available():
+        return False
+    if not dist.is_initialized():
+        return False
+    return dist.get_world_size() > 1
+
+
 def synchronize():
     """
     Helper function to synchronize (barrier) among all processes when
     using distributed training
     """
 
-    if not dist.is_available():
-        return
-    if not dist.is_initialized():
-        return
-
-    world_size = dist.get_world_size()
-    if world_size == 1:
+    if not is_distributed():
         return
 
     if dist.get_backend() == Backend.NCCL:
