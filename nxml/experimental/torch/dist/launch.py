@@ -25,7 +25,7 @@ except ImportError:
 from datetime import timedelta
 
 import torch
-from torch import distributed as dist
+from torch import distributed as torch_dist
 from torch import multiprocessing as mp
 from torch.distributed import Backend
 
@@ -120,7 +120,7 @@ def _mp_launcher(
     assert torch.cuda.is_available(), "cuda is not available. Please check your installation."
 
     try:
-        dist.init_process_group(
+        torch_dist.init_process_group(
             backend=backend,
             init_method=init_method,
             world_size=world_size,
@@ -149,7 +149,7 @@ def _mp_launcher(
 
     for i in range(num_machines):
         ranks_on_i = list(range(i * num_local_devices, (i + 1) * num_local_devices))
-        pg = dist.new_group(ranks_on_i)
+        pg = torch_dist.new_group(ranks_on_i)
         if i == machine_rank:
             comm._LOCAL_PROCESS_GROUP = pg
 
@@ -164,4 +164,4 @@ def _mp_launcher(
     # except Exception as e:
     #     raise e  # TODO: add exception handling
 
-    # dist.destroy_process_group()
+    # torch_dist.destroy_process_group()
