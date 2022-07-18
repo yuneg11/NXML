@@ -8,13 +8,13 @@ if TYPE_CHECKING:
     from . import jax
     from . import tensorflow
     from . import torch
-    from . import univ
+    from . import general
 else:
     numpy      = LazyModule("nxml.numpy")
     jax        = LazyModule("nxml.jax")
     torch      = LazyModule("nxml.torch")
     tensorflow = LazyModule("nxml.tensorflow")
-    univ       = LazyModule("nxml.univ")
+    general    = LazyModule("nxml.general")
 
 
 __all__ = [
@@ -23,7 +23,7 @@ __all__ = [
     "jax",
     "torch",
     "tensorflow",
-    "univ",
+    "general",
 ]
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"

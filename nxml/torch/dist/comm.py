@@ -18,7 +18,7 @@
 from functools import lru_cache
 
 import torch
-from torch import distributed as dist
+from torch import distributed as torch_dist
 from torch.distributed import Backend
 
 
@@ -38,17 +38,17 @@ __all__ = [
 
 
 # A torch process group which only includes processes that on the same machine as the current process.
-# This variable is set when processes are spawned by `launch()` in "engine/launch.py".
+# This variable is set when processes are spawned by `launch()` in "dist/launch.py".
 
 _LOCAL_PROCESS_GROUP = None
 
 
 def get_world_size() -> int:
-    if not dist.is_available():
+    if not torch_dist.is_available():
         return 1
-    if not dist.is_initialized():
+    if not torch_dist.is_initialized():
         return 1
-    return dist.get_world_size()
+    return torch_dist.get_world_size()
 
 
 def get_local_world_size() -> int:
@@ -57,19 +57,19 @@ def get_local_world_size() -> int:
         The size of the per-machine process group,
         i.e. the number of processes per machine.
     """
-    if not dist.is_available():
+    if not torch_dist.is_available():
         return 1
-    if not dist.is_initialized():
+    if not torch_dist.is_initialized():
         return 1
-    return dist.get_world_size(group=_LOCAL_PROCESS_GROUP)
+    return torch_dist.get_world_size(group=_LOCAL_PROCESS_GROUP)
 
 
 def get_rank() -> int:
-    if not dist.is_available():
+    if not torch_dist.is_available():
         return 0
-    if not dist.is_initialized():
+    if not torch_dist.is_initialized():
         return 0
-    return dist.get_rank()
+    return torch_dist.get_rank()
 
 
 def get_local_rank() -> int:
@@ -78,14 +78,14 @@ def get_local_rank() -> int:
         The rank of the current process within the local (per-machine) process group.
     """
 
-    if not dist.is_available():
+    if not torch_dist.is_available():
         return 0
-    if not dist.is_initialized():
+    if not torch_dist.is_initialized():
         return 0
     assert (
         _LOCAL_PROCESS_GROUP is not None
     ), "Local process group is not created! Please use launch() to spawn processes!"
-    return dist.get_rank(group=_LOCAL_PROCESS_GROUP)
+    return torch_dist.get_rank(group=_LOCAL_PROCESS_GROUP)
 
 
 def is_master_process() -> bool:
@@ -93,11 +93,11 @@ def is_master_process() -> bool:
 
 
 def is_distributed() -> bool:
-    if not dist.is_available():
+    if not torch_dist.is_available():
         return False
-    if not dist.is_initialized():
+    if not torch_dist.is_initialized():
         return False
-    return dist.get_world_size() > 1
+    return torch_dist.get_world_size() > 1
 
 
 def synchronize():
@@ -109,12 +109,12 @@ def synchronize():
     if not is_distributed():
         return
 
-    if dist.get_backend() == Backend.NCCL:
+    if torch_dist.get_backend() == Backend.NCCL:
         # This argument is needed to avoid warnings.
         # It's valid only for NCCL backend.
-        dist.barrier(device_ids=[torch.cuda.current_device()])
+        torch_dist.barrier(device_ids=[torch.cuda.current_device()])
     else:
-        dist.barrier()
+        torch_dist.barrier()
 
 
 @lru_cache()
@@ -124,10 +124,10 @@ def _get_global_gloo_group():
     The result is cached.
     """
 
-    if dist.get_backend() == Backend.NCCL:
-        return dist.new_group(backend="gloo")
+    if torch_dist.get_backend() == Backend.NCCL:
+        return torch_dist.new_group(backend="gloo")
     else:
-        return dist.group.WORLD
+        return torch_dist.group.WORLD
 
 
 def all_gather(data, group=None):
@@ -148,12 +148,12 @@ def all_gather(data, group=None):
     if group is None:
         group = _get_global_gloo_group()  # use CPU group by default, to reduce GPU RAM usage.
 
-    world_size = dist.get_world_size(group)
+    world_size = torch_dist.get_world_size(group)
     if world_size == 1:
         return [data]
 
     output = [None for _ in range(world_size)]
-    dist.all_gather_object(output, data, group=group)
+    torch_dist.all_gather_object(output, data, group=group)
     return output
 
 
@@ -177,17 +177,17 @@ def gather(data, dst=0, group=None):
     if group is None:
         group = _get_global_gloo_group()
 
-    world_size = dist.get_world_size(group=group)
+    world_size = torch_dist.get_world_size(group=group)
     if world_size == 1:
         return [data]
-    rank = dist.get_rank(group=group)
+    rank = torch_dist.get_rank(group=group)
 
     if rank == dst:
         output = [None for _ in range(world_size)]
-        dist.gather_object(data, output, dst=dst, group=group)
+        torch_dist.gather_object(data, output, dst=dst, group=group)
         return output
     else:
-        dist.gather_object(data, None, dst=dst, group=group)
+        torch_dist.gather_object(data, None, dst=dst, group=group)
         return []
 
 
@@ -228,8 +228,8 @@ def reduce_dict(input_dict, average=True):
             names.append(k)
             values.append(input_dict[k])
         values = torch.stack(values, dim=0)
-        dist.reduce(values, dst=0)
-        if dist.get_rank() == 0 and average:
+        torch_dist.reduce(values, dst=0)
+        if torch_dist.get_rank() == 0 and average:
             # only main process gets accumulated, so only divide by
             # world_size in this case
             values /= world_size

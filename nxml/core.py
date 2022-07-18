@@ -42,7 +42,7 @@ class LazyModule(ModuleType):
         return attr
 
 
-class LazyObject(ModuleType):
+class LazyObject(object):
     """
     A wrapper for modules that delays the import until it is needed
     """

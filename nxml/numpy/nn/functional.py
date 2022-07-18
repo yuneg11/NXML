@@ -1,7 +1,7 @@
 from typing import Any, Optional
 from functools import wraps
 
-from nxml.univ.nn.functional import (
+from nxml.general.nn.functional import (
     nll_loss as _nll_loss,
     cross_entropy as _cross_entropy,
     accuracy as _accuracy,

@@ -10,7 +10,7 @@ from torch.nn.functional import (
 # FIXME: This is a temporary fix before we can implement custom functions
 from torch.nn.functional import *
 
-from nxml.univ.nn.functional import (
+from nxml.general.nn.functional import (
     accuracy as _accuracy,
 )
 
