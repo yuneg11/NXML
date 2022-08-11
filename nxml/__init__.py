@@ -4,26 +4,29 @@ from . import core
 from .core import LazyModule
 
 if TYPE_CHECKING:
+    from . import general
     from . import numpy
+    from . import torch
     from . import jax
     from . import tensorflow
-    from . import torch
-    from . import general
+    from . import dev
 else:
-    numpy      = LazyModule("nxml.numpy")
-    jax        = LazyModule("nxml.jax")
-    torch      = LazyModule("nxml.torch")
-    tensorflow = LazyModule("nxml.tensorflow")
-    general    = LazyModule("nxml.general")
+    general = LazyModule(".general", "general", globals(), __package__)
+    numpy = LazyModule(".numpy", "numpy", globals(), __package__)
+    torch = LazyModule(".torch", "torch", globals(), __package__)
+    jax = LazyModule(".jax", "jax", globals(), __package__)
+    tensorflow = LazyModule(".tensorflow", "tensorflow", globals(), __package__)
+    dev = LazyModule(".dev", "dev", globals(), __package__)
 
 
 __all__ = [
     "core",
-    "numpy",
-    "jax",
-    "torch",
-    "tensorflow",
     "general",
+    "numpy",
+    "torch",
+    "jax",
+    "tensorflow",
+    "dev",
 ]
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
