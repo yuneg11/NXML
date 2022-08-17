@@ -12,7 +12,7 @@ from .utils import *
 if TYPE_CHECKING:
     from . import xla
 else:
-    xla = LazyModule("nxml.experimental.torch.dist.xla")
+    xla = LazyModule(".xla", "xla", globals(), __package__)
 
 
 __all__ = launch__all__ + comm__all__ + utils__all__ + ["xla"]
