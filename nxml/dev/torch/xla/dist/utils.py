@@ -14,43 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from enum import Enum
-from typing import Callable, Tuple, Union, Optional
-from datetime import timedelta
 
-from torch import distributed as dist
-from torch import multiprocessing as mp
+from torch.nn import Module
 
 
 __all__ = [
-    "DEFAULT_TIMEOUT",
-    "launch",
+    "create_ddp_model",
 ]
 
 
-DEFAULT_TIMEOUT = timedelta(seconds=30)
+def create_ddp_model(
+    model: Module,
+    *,
+    device_ids = None,
+    # fp16_compression=False,
+    **kwargs,
+) -> Module:
+    """
+    Dummy function to match the interface with GPU version.
+    """
 
-
-class Devices(Enum):
-    AUTO = "auto"
-
-
-class StartMethod(Enum):
-    SPAWN = "spawn"
-    FORK = "fork"
-
-
-
-def launch(
-    fn: Callable,
-    args: Tuple,
-    num_machines: int = 1,
-    machine_rank: int = 0,
-    num_local_devices: Union[int, Devices] = 1,
-    dist_url: Optional[str] = None,
-    timeout: timedelta = DEFAULT_TIMEOUT,
-) -> None:
-    pass
-
-
-# TODO
+    return model
